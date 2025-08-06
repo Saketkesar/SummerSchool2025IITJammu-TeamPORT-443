@@ -265,9 +265,9 @@ We welcome contributions from the cybersecurity community!
 **Cybersecurity Summer School 2025**
 
 ### Development Team
-- **Atharv Gaonker** - Core Development & Network Security
-- **Saket Kesar** - GUI Design & System Integration  
-- **Dhruv Verma** - Testing & Quality Assurance
+- **Atharv Gaonker** 
+- **Saket Kesar**  
+- **Dhruv Verma** 
 
 ### Project Details
 - **Program**: Cybersecurity Summer School 2025
