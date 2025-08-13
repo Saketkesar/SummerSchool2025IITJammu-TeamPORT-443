@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![Hackatime Badge](https://hackatime-badge.hackclub.com/U092A7ANS91/SummerSchool2025IITJammu-TeamPORT-443)](https://hackatime.hackclub.com/)
+[![Hackatime Badge](https://hackatime-badge.hackclub.com/U092A7ANS91/SummerSchool2025IITJammu)](https://hackatime.hackclub.com/)
 
 **Total coding time tracked using Hackatime**
 
