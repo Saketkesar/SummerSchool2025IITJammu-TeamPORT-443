@@ -1,0 +1,2 @@
+PyQt5>=5.15.0
+subprocess32; python_version < '3.0'

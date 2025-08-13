@@ -1,0 +1,82 @@
+Educational Use License
+
+Copyright (c) 2025 Team PORT:443 - ShadowSnare Development Team
+Cybersecurity Summer School 2025, IIT Jammu
+
+EDUCATIONAL PURPOSE ONLY
+
+This software is provided exclusively for educational and authorized penetration testing purposes.
+
+PERMITTED USES:
+- Educational instruction in cybersecurity concepts
+- Authorized penetration testing with written permission
+- Academic research in network security
+- Personal learning and skill development on owned networks
+- Classroom demonstrations and laboratory exercises
+
+PROHIBITED USES:
+- Any unauthorized access to networks or systems
+- Malicious activities including but not limited to:
+  * Unauthorized credential theft
+  * Network disruption or denial of service
+  * Privacy violations
+  * Corporate espionage
+  * Any illegal activities under applicable law
+- Commercial use without explicit written permission
+- Distribution for malicious purposes
+
+TERMS AND CONDITIONS:
+
+1. AUTHORIZATION REQUIREMENT
+   Users must obtain explicit written authorization before testing any network
+   or system that they do not own or have administrative control over.
+
+2. LEGAL COMPLIANCE
+   Users are solely responsible for ensuring compliance with all applicable
+   local, state, national, and international laws and regulations.
+
+3. NO WARRANTY
+   This software is provided "as is" without warranty of any kind, express
+   or implied, including but not limited to the warranties of merchantability,
+   fitness for a particular purpose, and non-infringement.
+
+4. LIMITATION OF LIABILITY
+   In no event shall the authors, copyright holders, or their institutions
+   be liable for any claim, damages, or other liability arising from the use
+   of this software.
+
+5. EDUCATIONAL INTENT
+   This software is designed to demonstrate security vulnerabilities for
+   educational purposes. Users are expected to use this knowledge responsibly
+   to improve security rather than exploit vulnerabilities.
+
+6. RESPONSIBLE DISCLOSURE
+   Any vulnerabilities discovered through the use of this software should be
+   reported through responsible disclosure channels to the affected parties.
+
+7. ATTRIBUTION
+   Users may modify and distribute this software for educational purposes
+   provided that proper attribution is maintained and these license terms
+   are preserved.
+
+CONTACT INFORMATION:
+For questions regarding this license or requests for commercial use,
+please contact the development team through the project repository.
+
+DISCLAIMER:
+The developers do not condone or support any illegal or unethical use of
+this software. Users assume full responsibility for their actions and any
+consequences thereof.
+
+By using this software, you acknowledge that you have read, understood,
+and agree to be bound by the terms of this license.
+
+---
+
+Team PORT:443
+- Saket Kesar  
+- Dhruv Verma
+- Atharv Gaonker
+
+Cybersecurity Summer School 2025
+IIT Jammu

