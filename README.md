@@ -32,6 +32,8 @@ Target → ShadowSnare → Internet
     Attack Dashboard
 ```
 
+> **See the complete attack demonstration in the [Screenshots & Demo](#screenshots--demo) section below.**
+
 ## Features
 
 ### Core Attack Modules
@@ -39,9 +41,11 @@ Target → ShadowSnare → Internet
 - **ARP Spoofing** - Traffic redirection through ARP table manipulation  
 - **DNS Spoofing** - Domain hijacking with DoH/DoT blocking capabilities
 - **GUI Interface** - Multi-tabbed PyQt5 dashboard with real-time updates
-- **Phishing Framework** - Customizable phishing page deployment
+- **Phishing Framework** - Web server setup (users must create own pages in `/var/www/html/`)
 - **Traffic Monitor** - Live packet analysis and credential capture
 - **Session Management** - Multi-target attack coordination
+
+> **Important:** ShadowSnare provides the framework but does NOT include pre-built phishing pages. Users must create their own educational test pages for demonstration purposes.
 
 ### Technical Features
 - Bettercap integration for advanced network attacks
@@ -65,6 +69,45 @@ pip3 install -r requirements.txt
 sudo python3 shadowsnare.py
 ```
 
+## Setting Up Educational Test Pages
+
+ShadowSnare provides the attack framework but requires users to create their own educational test pages. This approach ensures ethical use and prevents misuse.
+
+### Creating Test Pages
+
+1. **Create your educational page:**
+```bash
+# Create a simple test page
+sudo nano /var/www/html/index.html
+```
+
+2. **Example educational test page structure:**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Educational Test Page</title>
+</head>
+<body>
+    <h1>This is an Educational Test Page</h1>
+    <p>Created for cybersecurity education purposes only</p>
+    <!-- Add your educational form here -->
+</body>
+</html>
+```
+
+3. **Set proper permissions:**
+```bash
+sudo chown -R www-data:www-data /var/www/html/
+sudo chmod -R 755 /var/www/html/
+```
+
+### Important Guidelines
+- Only create pages for educational demonstration
+- Use in controlled, isolated network environments
+- Clearly label all content as educational/test material
+- Never replicate real websites for malicious purposes
+
 ## How It Works
 
 ```
@@ -74,7 +117,58 @@ sudo python3 shadowsnare.py
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
+## Screenshots
+
+### 1. ShadowSnare Homepage
+The main interface provides an intuitive dashboard for all attack operations.
+
+![ShadowSnare Homepage](images/Shadownarehomepage.png)
+
+### 2. Network Scanning
+Automated target discovery and network reconnaissance.
+
+![Network Scanning Complete](images/Networkscanningcompletedbyshadownare.png)
+
+### 3. Target Selection
+Identifying and selecting the target machine IP.
+
+![Target Machine IP](images/targetmachineip.png)
+
+### 4. Domain Configuration
+Setting up the domain to spoof for the attack.
+
+![Setting Domain to Spoof](images/Settingthedomaintospoof.png)
+
+### 5. Attack Execution
+Launching the MITM attack against the target.
+
+![Attacking the Target](images/attackingthetarget.png)
+
+### 6. Phishing Page Deployment
+The spoofed LinkedIn page presented to the victim.
+
+![LinkedIn Spoofed Page](images/linkedinspoofedpage.png)
+
+> **⚠️ Educational Notice:** This LinkedIn page was created solely for educational purposes within our own controlled network environment. ShadowSnare does NOT provide pre-built phishing pages. Users must create their own test pages and place them in `/var/www/html/` for educational demonstration purposes only.
+
+### 7. Credential Capture
+Victim entering credentials on the spoofed page.
+
+![Entering Password in Spoofed Page](images/Enteringthpasswordindpoofedpage.png)
+
+### 8. Post-Credential Entry
+After the victim submits their credentials.
+
+![After Entering Password](images/afterentringpass.png)
+
+### 9. Attack Completion
+Successful credential capture and attack completion with logs.
+
+![Attack Done - See the Logs](images/attackdoneseethelogs.png)
+
 ## Code Example
+
+The following code demonstrates the core attack functionality shown in the screenshots above:
 
 ```python
 # Start attack
@@ -123,62 +217,6 @@ We welcome contributions to improve ShadowSnare for educational purposes:
 - Documentation and tutorials
 - Security enhancements
 
-## Requirements
-
-### System Requirements
-- **Operating System**: Linux (Ubuntu 20.04+ recommended)
-- **Python**: 3.8 or higher
-- **Memory**: 2GB RAM minimum
-- **Storage**: 1GB free space
-- **Network**: Wireless adapter or Ethernet interface
-
-### Dependencies
-- **PyQt5** - GUI framework
-- **Bettercap** - Network attack engine
-- **Apache2** - Web server
-- **nmap** - Network discovery
-- **iptables** - Traffic control
-
-### Optional Tools
-- **Cloudflared** - HTTPS tunnel support
-- **Wireshark** - Advanced packet analysis
-- **Metasploit** - Extended attack capabilities
-
-## Project Structure
-
-```
-ShadowSnare/
-├── shadowsnare.py                    # Main GUI application
-├── dns_server.py                     # DNS spoofing module  
-├── setup.sh                         # Automated installation script
-├── requirements.txt                 # Python dependencies
-├── README.md                        # Project documentation
-├── ShadowSnare_Internship_Annexure.txt  # Technical documentation
-└── LICENSE                          # MIT license
-```
-
-### Module Breakdown
-- **GUI Components**: PyQt5-based interface with multiple tabs
-- **Network Engine**: Bettercap integration for attack execution
-- **Web Framework**: Apache server with PHP backend
-- **Logging System**: Comprehensive activity and credential logging
-- **Configuration**: JSON-based settings and target management
-
-## Educational Use Only
-
-**Important Notice**: This tool is developed strictly for educational and authorized testing purposes.
-
-### Permitted Uses
-- Cybersecurity education and training
-- Authorized penetration testing
-- Network security research
-- Vulnerability demonstration in controlled environments
-
-### Prohibited Uses
-- Unauthorized network attacks
-- Malicious credential harvesting
-- Privacy violations
-- Any illegal activities
 
 ### Legal Compliance
 Users must ensure compliance with local laws and regulations. The developers are not responsible for misuse of this educational tool.
